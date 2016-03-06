@@ -1,4 +1,5 @@
-# docx_report
+# docx_report [![Build Status](https://travis-ci.org/abudaqqa/docx_report.svg?branch=master)](https://travis-ci.org/abudaqqa/docx_report) [![Code Climate](https://codeclimate.com/github/abudaqqa/docx_report/badges/gpa.svg)](https://codeclimate.com/github/abudaqqa/docx_report) [![Gem Version](https://badge.fury.io/rb/docx_report.svg)](https://badge.fury.io/rb/docx_report)
+
 light weight gem that generates docx files by replacing strings on
 previously created .docx file
 
@@ -45,3 +46,9 @@ send_data report.generate_docx,
   disposition: 'attachment',
   filename: 'output.docx'
 ```
+
+### TODO
+
+- Improve documentation
+- Support inserting images
+- Allow more tables customization
