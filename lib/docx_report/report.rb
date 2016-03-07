@@ -14,11 +14,11 @@ module DocxReport
       @fields["{@#{name}}"] = value
     end
 
-    def add_table(name, collection, has_header = false)
+    def add_table(name, collection = nil, has_header = false)
       table = Table.new name, has_header
       @tables << table
       yield table
-      table.load_records collection
+      table.load_records collection if collection
     end
 
     def generate_docx(filename = nil, template_path = nil)
