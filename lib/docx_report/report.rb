@@ -26,9 +26,14 @@ module DocxReport
       parser = Parser.new doc
       parser.fill_all_tables @tables
       parser.replace_all_fields @fields
-      docx_path = filename || Tempfile.new('')
-      doc.save docx_path
-      File.read docx_path if filename.nil?
+      temp = Tempfile.new('') if filename.nil?
+      docx_path = filename || temp.path
+      begin
+        doc.save docx_path
+        File.read docx_path if filename.nil?
+      ensure
+        temp.close! if temp
+      end
     end
   end
 end

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'docx_report'
-  s.version     = '0.0.3'
+  s.version     = '0.0.4'
   s.date        = '2016-03-07'
   s.summary     = 'docx_report generate docx files based on previously created
                    .docx file'
