@@ -10,8 +10,9 @@ describe DocxReport::Document do
   end
 
   it 'saves new docx file' do
-    subject.save 'output.docx'
-    expect(File.exists? 'output.docx').to be true
-    File.delete 'output.docx'
+    temp = Tempfile.new 'output.docx'
+    subject.save temp.path
+    expect(File.exists? temp.path).to be true
+    temp.close!
   end
 end

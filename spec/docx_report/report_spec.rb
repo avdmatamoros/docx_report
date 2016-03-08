@@ -14,26 +14,26 @@ describe DocxReport::Report do
              { name: 'Item 3', details: 'details of item 3' }]
     subject.add_table 'name', items do |table|
       table.add_field(:title, :name)
-      table.add_field(:description, :details)
+      table.add_field(:description) { |item| "Details: #{item[:details]}" }
     end
-
     records = subject.tables.first.records
     expect(records.count).to eq(3)
     expect(records.first.fields).to eq(
       {
         '{@title}' => 'Item 1',
-        '{@description}' => 'details of item 1'
+        '{@description}' => 'Details: details of item 1'
       })
     expect(records.last.fields).to eq(
       {
         '{@title}' => 'Item 3',
-        '{@description}' => 'details of item 3'
+        '{@description}' => 'Details: details of item 3'
       })
   end
 
   it 'generates new docx file' do
-    subject.generate_docx 'output.docx'
-    expect(File.exists? 'output.docx').to be true
-    File.delete 'output.docx'
+    temp = Tempfile.new 'output.docx'
+    subject.generate_docx temp.path
+    expect(File.exists? temp.path).to be true
+    temp.close!
   end
 end

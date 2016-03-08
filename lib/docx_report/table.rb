@@ -15,16 +15,20 @@ module DocxReport
       new_record
     end
 
-    def add_field(name, mapped_field)
-      @fields << { name: name, mapped_field: mapped_field }
+    def add_field(name, mapped_field = nil, &block)
+      @fields << { name: name, mapped_field: mapped_field, block: block }
     end
 
     def load_records(collection)
       collection.each do |item|
         record = new_record
         @fields.each do |field|
-          record.add_field field[:name],
-                           mapped_value(item, field[:mapped_field])
+          if field[:block].nil?
+            record.add_field field[:name],
+                             mapped_value(item, field[:mapped_field])
+          else
+            record.add_field field[:name], field[:block].call(item)
+          end
         end
       end
     end
