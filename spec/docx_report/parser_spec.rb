@@ -12,7 +12,7 @@ describe DocxReport::Parser do
                .xpath('//*[contains(text(), "{@name}") ]').count).to eq(1)
     expect(@doc.files['word/document.xml']
                .xpath('//*[contains(text(), "Ahmed") ]').count).to eq(0)
-    subject.replace_all_fields({ 'name' => 'Ahmed' })
+    subject.replace_all_fields('name' => 'Ahmed')
     expect(@doc.files['word/document.xml']
                .xpath('//*[contains(text(), "{@name}") ]').count).to eq(0)
     expect(@doc.files['word/document.xml']
@@ -30,7 +30,7 @@ describe DocxReport::Parser do
     table.new_record.add_field 'title', 'First record'
     table.new_record.add_field 'title', 'Second record'
     table.new_record.add_field 'title', 'Third record'
-    subject.fill_all_tables([table])
+    subject.fill_all_tables [table]
     expect(@doc.files['word/document.xml']
                .xpath('//*[contains(text(), "{@title}") ]').count).to eq(0)
     expect(@doc.files['word/document.xml']

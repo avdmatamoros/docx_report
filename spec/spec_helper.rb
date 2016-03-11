@@ -7,4 +7,5 @@ require 'rspec'
 require 'docx_report'
 
 RSpec.configure do |config|
+  config.color = true
 end

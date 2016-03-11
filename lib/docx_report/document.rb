@@ -13,21 +13,23 @@ module DocxReport
     end
 
     def save(output_path)
-      zip = Zip::File.open @template_path
+      template = Zip::File.open @template_path
       Zip::OutputStream.open(output_path) do |output|
-        zip.each do |entry|
-          output.put_next_entry entry.name
-          if @files.keys.include? entry.name
-            output.write @files[entry.name].to_xml
-          else
-            output.write zip.read(entry.name)
-          end
-        end
+        template.each { |entry| add_files template, output, entry.name }
       end
-      zip.close()
+      template.close
     end
 
     private
+
+    def add_files(template_file, output, entry_name)
+      output.put_next_entry entry_name
+      if @files.keys.include? entry_name
+        output.write @files[entry_name].to_xml
+      else
+        output.write template_file.read(entry_name)
+      end
+    end
 
     def content_types_xpath
       "//*[@ContentType = '#{CONTENT_TYPES.join("' or @ContentType='")}']"
@@ -46,9 +48,12 @@ module DocxReport
     CONTENT_TYPE_NAME = '[Content_Types].xml'.freeze
 
     CONTENT_TYPES = [
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml'
+      'application/vnd.openxmlformats-officedocument.wordprocessingml'\
+      '.document.main+xml',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml'\
+      '.header+xml',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml'\
+      '.footer+xml'
     ].freeze
   end
 end

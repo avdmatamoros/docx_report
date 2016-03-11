@@ -56,3 +56,4 @@ send_data report.generate_docx,
 - Improve documentation
 - Support inserting images
 - Allow more tables customization
+- Support filling charts data

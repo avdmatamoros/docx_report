@@ -5,14 +5,14 @@ describe DocxReport::Document do
 
   it 'loads content xml files' do
     expect(subject.files.keys).to match_array ['word/document.xml',
-                                               'word/header.xml',
-                                               'word/footer.xml']
+                                               'word/header1.xml',
+                                               'word/footer1.xml']
   end
 
   it 'saves new docx file' do
     temp = Tempfile.new 'output.docx'
     subject.save temp.path
-    expect(File.exists? temp.path).to be true
+    expect(File.exist?(temp.path)).to be true
     temp.close!
   end
 end

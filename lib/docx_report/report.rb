@@ -22,18 +22,24 @@ module DocxReport
     end
 
     def generate_docx(filename = nil, template_path = nil)
-      doc = Document.new template_path || @template_path
-      parser = Parser.new doc
-      parser.fill_all_tables @tables
-      parser.replace_all_fields @fields
-      temp = Tempfile.new('') if filename.nil?
+      document = Document.new template_path || @template_path
+      apply_changes document
+      temp = Tempfile.new('output') if filename.nil?
       docx_path = filename || temp.path
       begin
-        doc.save docx_path
+        document.save docx_path
         File.read docx_path if filename.nil?
       ensure
         temp.close! if temp
       end
+    end
+
+    private
+
+    def apply_changes(document)
+      parser = Parser.new document
+      parser.fill_all_tables @tables
+      parser.replace_all_fields @fields
     end
   end
 end

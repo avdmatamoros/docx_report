@@ -5,6 +5,6 @@ describe DocxReport::Record do
 
   it 'adds text fields' do
     subject.add_field 'name', 'Ahmed Abudaqqa'
-    expect(subject.fields).to eq({'{@name}' => 'Ahmed Abudaqqa'})
+    expect(subject.fields).to eq('{@name}' => 'Ahmed Abudaqqa')
   end
 end
