@@ -11,18 +11,23 @@ Add this to your Gemfile and run `bundle install`:
 gem 'docx_report'
 ```
 
+### Important changes on 0.1.0 version
+ The params on the template document is changed from {@param} to @param@ to
+ avoid html encoding when using params in urls
+
 ### Usage
 
 To generate the report you have to create .docx template using MS word and set
 fields inside your template to be replaced with data
 
 fields name should be wrapped with braces and start with @ for example name
-field should look like {@name}
+field should look like @name@
 
 to generate report based on template with the previous name field
 ```ruby
 report = DocxReport.create_docx_report 'public/template.docx'
 report.add_field 'name', 'Ahmed Abudaqqa'
+report.add_field 'url', 'http://www.abudaqqa.com', :hyperlink
 ```
 
 You can also set tables inside your template and then give it a title using
@@ -32,6 +37,10 @@ MS word. and then you can fill it with data by passing a collection of data
 report.add_table 'table1', @users do |table|
   table.add_field(:title, :name)
   table.add_field(:description) { |user| "details: #{user.details}" }
+  table.add_field(:pic_link, :avatar_link, :hyperlink)
+  table.add_field(:url, nil, :hyperlink) do |user|
+    "http://abudqqa.com/users/id=#{user.id}"
+  end
 end
 ```
 In the previous example the first row of the table will be repeated and filled

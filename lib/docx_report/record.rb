@@ -1,13 +1,11 @@
+require 'docx_report/data_item'
+
 module DocxReport
   class Record
-    attr_accessor :fields
+    include DataItem
 
     def initialize
-      @fields = {}
-    end
-
-    def add_field(name, value)
-      fields["{@#{name}}"] = value
+      @fields = []
     end
   end
 end
