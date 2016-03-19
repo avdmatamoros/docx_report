@@ -48,17 +48,30 @@ describe DocxReport::Report do
     end).not_to be_nil
   end
 
-  # it 'generates new docx file after apply changes' do
-  #   # temp = Tempfile.new 'output.docx'
-  #   subject.add_field 'photo', 'ruby.png', :image
-  #   # subject.add_field 'name', 'Ahmed'
-  #   subject.generate_docx 'output.docx'
-  #   # expect(File.exist?(temp.path)).to be true
-  #   expect(File.exist?('output.docx')).to be_truthy
-  #   # expect(load_main_xml('output.docx').xpath(
-  #   #   '//*[contains(text(), "Ahmed Abudaqqa")]').first).not_to be_nil
-  #   # temp.close!
-  # end
+  it 'generates new docx file after apply changes' do
+    temp = Tempfile.new 'output.docx'
+    subject.add_field 'photo', 'spec/files/ruby.png', :image
+    items = [{ name: 'Item 1', details: 'details of item 1', url: 'web1.com',
+               link: 'https://www.ruby-lang.org/images/header-ruby-logo@2x.png',
+               subitems: [{ subtitle: 'Item4' }, { subtitle: 'Item5' }] },
+             { name: 'Item 2', details: 'details of item 2', url: 'web2.com',
+               link: 'spec/files/ruby.png',
+               subitems: [{ subtitle: 'Item6' }] },
+             { name: 'Item 3', details: 'details of item 3', url: 'web3.com',
+               link: 'spec/files/ruby.png',
+               subitems: [{ subtitle: 'Item7' }, { subtitle: 'Item8' },
+                          { subtitle: 'Item9' }] }]
+    subject.add_table 'table1', items do |table|
+      table.add_field(:title, :name)
+      table.add_field(:description) { |item| "Details: #{item[:details]}" }
+      table.add_field(:url, :url, :hyperlink)
+      table.add_field(:picture, :link, :image)
+      table.add_table(:subtable, :subitems).add_field(:subtitle, :subtitle)
+    end
+    subject.generate_docx temp.path
+    expect(File.exist?(temp.path)).to be true
+    temp.close!
+  end
 
   private
 

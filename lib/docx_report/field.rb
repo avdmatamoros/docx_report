@@ -1,5 +1,9 @@
+
+require 'docx_report/block_value'
+
 module DocxReport
   class Field
+    include BlockValue
     attr_reader :name, :value, :type
 
     def initialize(name, value = nil, type = :text, &block)
@@ -12,12 +16,8 @@ module DocxReport
       @value = value || block
     end
 
-    def load_value(item)
-      Field.new(name[1..-2], if @value.is_a? Proc
-                               @value.call(item)
-                             else
-                               item.is_a?(Hash) ? item[@value] : item.send(@value)
-                             end, type)
+    def load_field(item)
+      Field.new(name[1..-2], load_value(item), type)
     end
   end
 end

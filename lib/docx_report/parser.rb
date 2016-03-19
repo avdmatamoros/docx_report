@@ -10,6 +10,7 @@ module DocxReport
       @document.files.each do |file|
         replace_node_fields(fields, file.xml)
         replace_node_hyperlinks(fields, file.xml, file)
+        replace_node_images(fields, file.xml, file)
       end
     end
 
@@ -27,10 +28,15 @@ module DocxReport
 
     def find_hyperlink_nodes(name, parent_node, file)
       links = file.rels_xml.xpath "//*[@Target='#{name}']"
-      parent_node.xpath(".//w:hyperlink[@r:id='#{find_by_Id(links)}']")
+      parent_node.xpath(".//w:hyperlink[@r:id='#{find_by_id(links)}']")
     end
 
-    def find_by_Id(links)
+    def find_image_nodes(name, parent_node)
+      parent_node.xpath(
+        ".//w:drawing[.//wp:docPr[@title='#{name}']]")
+    end
+
+    def find_by_id(links)
       links.map { |link| link[:Id] }.join("' or @r:id='")
     end
 
@@ -52,9 +58,24 @@ module DocxReport
       end
     end
 
+    def replace_node_images(fields, parent_node, file)
+      fields.select { |f| f.type == :image }.each do |field|
+        image = document_image(field.value)
+        find_image_nodes(field.name, parent_node).each do |node|
+          node.xpath('.//*[@r:embed]').first['r:embed'] = image
+                                                          .file_image_id(file)
+          image.nodes << node
+        end
+      end
+    end
+
+    def document_image(path)
+      @document.images.detect { |img| img.path == path } ||
+        Image.new(path, @document)
+    end
+
     def find_table(name, parent_node)
-      parent_node.xpath(".//w:tbl[//w:tblCaption[@w:val='#{name}']][1]")
-                    .first
+      parent_node.xpath(".//w:tbl[//w:tblCaption[@w:val='#{name}']][1]").first
     end
 
     def find_row(table, table_node)
@@ -75,8 +96,10 @@ module DocxReport
       table.records.each do |record|
         new_row = row_node.dup
         row_node.add_previous_sibling new_row
+        fill_tables record.tables, new_row, file
         replace_node_fields record.fields, new_row
         replace_node_hyperlinks record.fields, new_row, file, true
+        replace_node_images record.fields, new_row, file
       end
       row_node.remove
     end

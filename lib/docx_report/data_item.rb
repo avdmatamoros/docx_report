@@ -1,6 +1,6 @@
 module DocxReport
   module DataItem
-    attr_reader :fields, :images
+    attr_reader :fields, :images, :tables
 
     def add_field(name, value, type = :text)
       field = Field.new name, value, type

@@ -6,6 +6,7 @@ module DocxReport
 
     def initialize
       @fields = []
+      @tables = []
     end
   end
 end

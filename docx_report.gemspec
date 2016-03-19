@@ -1,12 +1,12 @@
 Gem::Specification.new do |s|
   s.name        = 'docx_report'
-  s.version     = '0.1.0'
-  s.date        = '2016-03-20'
+  s.version     = '0.2.1'
+  s.date        = '2016-03-25'
   s.summary     = 'docx_report generate docx files based on previously created
                    .docx template file'
-  s.description = 'docx_report is a light weight gem that generates docx files
-                   by replacing strings and inserting images on previously
-                   created .docx template file'
+  s.description = 'docx_report is a gem that generates docx files by replacing
+                   strings and inserting images on previously created .docx
+                   template file'
   s.authors     = ['Ahmed Abudaqqa']
   s.email       = 'ahmed@abudaqqa.com'
   s.files       = `git ls-files`.split("\n").select { |f| f.match(%r{^(lib)/}) }
@@ -15,4 +15,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'nokogiri', '~> 1.6'
   s.add_dependency 'rubyzip',  '~> 1.2'
+  s.add_dependency 'mini_magick', '~> 4.5'
 end

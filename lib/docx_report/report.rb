@@ -3,7 +3,7 @@ require 'docx_report/data_item'
 module DocxReport
   class Report
     include DataItem
-    attr_reader :fields, :tables
+    attr_reader :fields
 
     def initialize(template_path)
       @template_path = template_path
@@ -33,8 +33,8 @@ module DocxReport
 
     def apply_changes(document)
       parser = Parser.new document
-      parser.replace_all_fields @fields
       parser.fill_all_tables @tables
+      parser.replace_all_fields @fields
     end
   end
 end

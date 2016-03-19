@@ -6,6 +6,8 @@ require 'docx_report/record'
 require 'docx_report/field'
 require 'docx_report/content_file'
 require 'docx_report/hyperlink'
+require 'docx_report/image'
+require 'docx_report/block_value'
 
 module DocxReport
   def self.create_docx_report(template_path)
