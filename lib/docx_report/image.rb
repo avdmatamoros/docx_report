@@ -38,7 +38,7 @@ module DocxReport
       fix_rels
       output.put_next_entry "word/media/image#{@id}.#{@type}"
       img.write output
-      set_dimentions img.width, img.height, img.resolution[0], img.resolution[1]
+      set_dimentions img.width, img.height, img.resolution
     end
 
     private
@@ -52,9 +52,9 @@ module DocxReport
       file.rels_xml.children.first << image_ref(files[file.name])
     end
 
-    def set_dimentions(width, height, horz_dpi, vert_dpi)
-      @width = width.to_f / horz_dpi * EMUS_PER_INCH
-      @height = height.to_f / vert_dpi * EMUS_PER_INCH
+    def set_dimentions(width, height, resolution)
+      @width = width.to_f / resolution[0] * EMUS_PER_INCH
+      @height = height.to_f / vert_dpi(resolution) * EMUS_PER_INCH
       fit_in_page
       @nodes.each do |node|
         node.xpath('.//*[@cx and @cy]').each do |ext|
@@ -62,6 +62,10 @@ module DocxReport
           ext[:cy] = @height.to_i
         end
       end
+    end
+
+    def vert_dpi(resolution)
+      resolution[resolution.length == 2 ? 1 : 2]
     end
 
     def fit_in_page
