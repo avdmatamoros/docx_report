@@ -1,4 +1,5 @@
-require 'mini_magick'
+require 'open-uri'
+require 'mime/types'
 
 module DocxReport
   class Image
@@ -33,11 +34,19 @@ module DocxReport
     end
 
     def save(output)
-      img = MiniMagick::Image.open(@path)
-      @type = img.type.downcase
+      uri = URI.parse(@path)
+      io = uri.open
+      mtype = MIME::Types[io.content_type].first
+      @type = if mtype
+                 mtype.sub_type.downcase
+              else
+                'jpeg'
+              end
       fix_rels
+      word_asset_path = "word/media/image#{@id}.#{@type}"
       output.put_next_entry "word/media/image#{@id}.#{@type}"
-      img.write output
+      IO.copy_stream io, output
+    
       set_dimentions img.width, img.height, img.resolution
     end
 
