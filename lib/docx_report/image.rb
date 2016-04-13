@@ -34,6 +34,7 @@ module DocxReport
     end
 
     def save(output)
+      @path = 'https://www.ruby-lang.org/images/header-ruby-logo@2x.png'
       uri = URI.parse(@path)
       io = uri.open
       mtype = MIME::Types[io.content_type].first
@@ -43,14 +44,22 @@ module DocxReport
                 'jpeg'
               end
       fix_rels
-      word_asset_path = "word/media/image#{@id}.#{@type}"
+      
       output.put_next_entry "word/media/image#{@id}.#{@type}"
       IO.copy_stream io, output
     
-      set_dimentions img.width, img.height, img.resolution
+      width, height = image_dimensions(io).dimensions
+      set_dimentions width, height, img.resolution
     end
 
     private
+    
+    def image_dimensions(io_stream)
+	  Dimensions(io_stream).tap do |io|
+        io.read
+        io.close
+      end
+    end
 
     def fix_rels
       new_rels.each { |rels| format(rels, @id, @type) }
